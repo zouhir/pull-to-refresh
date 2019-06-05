@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hello!</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+    
+    <!-- import the webpage's javascript file -->
+    <script src="/script.js" defer></script>
+  </head>  
+  <body>
+    <h1 class="warning">
+      🚨 Animation worket is not enabled, please enable: <a href="edge://flags/#enable-experimental-web-platform-features">edge://flags/#enable-experimental-web-platform-features</a>
+    </h1>
+    <div id="app">
+      <!-- fake scroller -->
+      <!-- 
+        fake div used as a hack:
+        when we drag the listview to refresh, the delta value gets applied on .fake > .fakeScroller as a scrollTo(0, delta)
+        scrollTimeline in animation worklet is attached to this.
+      -->
+      <div class="fake">
+        <div class="fakeScroller" />
+      </div>
+    </div>
+    
+    <header class="header">
+        <!--  Trees mountain -->
+        <svg
+          viewBox="0 0 366 197"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          class="mnt-trees"
+        >
+          <path d="M0 84L88 48L224 94L348 50L366 64V197H0V84Z" fill="#86D7DB" />
+          <path
+            d="M54 68C77 68 62 36 54 4C46 36 31 68 54 68Z"
+            fill="#389296"
+            id="leaves-5"
+          />
+          <path
+            d="M56 88C55.3333 66.6667 54.6667 45.3333 54 24C53.3333 45.3333 52.6667 66.3333 52 87"
+            fill="black"
+            id="trunk-5"
+          />
+          <path
+            d="M67 65C90 65 75 33 67 0C59 33 44 65 67 65Z"
+            fill="#389296"
+            id="leaves-4"
+          />
+          <path
+            d="M69 85C68.3333 63.6667 67.6667 42.3333 67 21C66.3333 42.3333 65.6667 63.3333 65 84"
+            fill="black"
+            id="trunk-4"
+          />
+          <path
+            d="M264 70C287 70 272 38 264 5C256 38 241 70 264 70Z"
+            fill="#389296"
+            id="leaves-3"
+          />
+          <path
+            d="M266 90C265.333 68.6667 264.667 47.3333 264 26C263.333 47.3333 262.667 68.3333 262 89"
+            fill="black"
+            id="trunk-3"
+          />
+          <path
+            d="M287 69C310 69 295 37 287 4C279 37 264 69 287 69Z"
+            fill="#207277"
+            id="leaves-2"
+          />
+          <path
+            d="M289 89C288.333 67.6667 287.667 46.3333 287 25C286.333 46.3333 285.667 67.3333 285 88"
+            fill="black"
+            id="trunk-2"
+          />
+          <path
+            d="M313 69C336 69 321 37 313 4C305 37 290 69 313 69Z"
+            fill="#389296"
+            id="leaves-1"
+          />
+          <path
+            d="M315 89C314.333 67.6667 313.667 46.3333 313 25C312.333 46.3333 311.667 67.3333 311 88"
+            fill="black"
+            id="trunk-1"
+          />
+        </svg>
+
+        <!-- Middle Mountain -->
+        <svg
+          viewBox="0 0 366 132"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          class="mtn-middle"
+        >
+          <path d="M0 32L106 12L272 48L342 0L366 20V132H0V32Z" fill="#3C929A" />
+        </svg>
+
+        <!-- Lowest Mountain -->
+        <svg
+          viewBox="0 0 366 111"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          class="mtn-low"
+        >
+          <path d="M0 25L62 15L235 3L305 0L366 8V111H0V25Z" fill="#416175" />
+        </svg>
+      </header>
+      
+      <div class="listview">
+        <div class="action-bar">
+          <button class="action-button">✈️</button>
+        </div>
+        <ul>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+          <li>
+            <div class="item-icon">📆</div>
+            <div class="item-text">Meeting with Bogdan</div>
+          </li>
+        </ul>
+      </div>
+
+  </body>
+</html>
