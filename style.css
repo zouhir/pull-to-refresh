@@ -1,0 +1,141 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  -webkit-overflow-scrolling: touch;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  font-size: 15px;
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-font-feature-settings: "kern" 1;
+  -moz-font-feature-settings: "kern" 1;
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+#app {
+  background: #416175;
+  height: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.warning {
+  display: none;
+}
+
+.fake {
+  height: 1px;
+  opacity: 0;
+  width: 1px;
+  overflow-y: scroll;
+}
+
+.fakeScroller {
+  height: 100vh;
+}
+
+
+/**
+  The Trees scene
+**/
+.header {
+  width: 100%;
+  max-width: 800px;
+  flex: 0 0 40vh;
+  background: green;
+  position: sticky;
+  top: 0;
+  overflow: hidden;
+  background: linear-gradient(#7bceca, #82d3cb);
+  z-index: 0;
+}
+
+.header svg {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+}
+
+.mtn-low {
+  transform: translateY(60%);
+}
+
+.mtn-middle {
+  transform: translateY(50%);
+}
+
+.mnt-trees {
+  transform: translateY(35%);
+}
+
+
+/*
+ The list view
+*/
+
+.listview-wrapper {
+  flex: 1;
+  position: relative;
+}
+.listview {
+  background: #fff;
+  position: relative;
+  z-index: 2;
+  scroll-snap-align: start;
+}
+
+.action-bar {
+  height: 80px;
+  position: relative;
+  z-index: 3;
+  padding: 5px;
+}
+
+.action-bar button {
+  width: 60px;
+  height: 60px;
+  border-radius: 100%;
+  border: none;
+  background: blue;
+  transform: translateY(-50%);
+  position: relative;
+  z-index: 4;
+  font-size: 28px;
+}
+
+.listview ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.listview ul li {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  padding: 20px 15px;
+}
+
+.item-icon {
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  background: orange;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+}
+
