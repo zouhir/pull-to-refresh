@@ -7,7 +7,7 @@ if (!("animationWorklet" in CSS)) {
 
 
 // register animation
-Promise.all([ CSS.animationWorklet.addModule("worklets/parallax.js"), CSS.animationWorklet.addModule("worklets/wobble.js")]).then(function(values) {
+Promise.all([ /* CSS.animationWorklet.addModule("worklets/parallax.js") */, CSS.animationWorklet.addModule("worklets/wobble.js")]).then(function(values) {
   pageReady()
 });
 
@@ -24,23 +24,12 @@ function pageReady () {
   const mtnTrees = $(".mnt-trees");
   
   // scroll timeline variables 
-  const scrollSource = fakeScrollEl;
-  const timeRange = 10;
-  const scrollTimeline = new ScrollTimeline({ scrollSource, timeRange });
+  // const scrollSource = fakeScrollEl;
+  // const timeRange = 10;
+  // const scrollTimeline = new ScrollTimeline({ scrollSource, timeRange });
  
-  // register worklets to perform parallax when the fakeScroll element scrolls
-  createParallaxWorkletForTrees( trees, scrollTimeline, timeRange ).forEach((worklet) =>{
-    worklet.play();
-  })
-  
-  createParallaxWorkletForMountains( {  mtnLow, mtnMiddle, mtnTrees}, scrollTimeline, timeRange ).forEach((worklet) =>{
-    worklet.play();
-  })
-  
-  // register workletr to perform wobble effect when's pull-to-referesh released
-  
-  
-  let wobbleWorklets = createWobbleEffectForTrees(trees);
+  const animationGroupTrees = createParallaxAnimationForTrees(trees);
+  const animationGroupMountains = createParallaxAnimationForMountains({mtnLow, mtnMiddle, mtnTrees});
   
   // mouse-drag functionality
   let isDragLocked = true;
@@ -68,19 +57,23 @@ function pageReady () {
     if (isDragLocked === true) return;
     let endY = e.clientY || e.touches[0].clientY;
     let delta = startY - endY;
+    let absDelta = Math.abs(delta);
     if (delta < 0) {
-      let absDelta = Math.abs(delta);
+      
       window.requestAnimationFrame(() => {
         listviewEl.style.transform = `translateY(${absDelta}px)`;
-        fakeScrollEl.scrollTo(0, absDelta);
+        animationGroupTrees.forEach((worklet) =>{
+          worklet.currentTime += 15;
+        })
+        animationGroupMountains.forEach((worklet) =>{
+          worklet.currentTime += 15;
+        })
       });
     }
   }
   
   function _stopDragging (e) {
-    console.log('1')
     if (isDragLocked === true) return;
-    console.log('2')
     listviewEl.addEventListener("transitionend", e => {
       listviewEl.style.transition = ``;
       listviewEl.style.transform = ``;
@@ -88,9 +81,18 @@ function pageReady () {
     window.requestAnimationFrame(() => {
       listviewEl.style.transition = `transform 0.15s ease-in-out`;
       listviewEl.style.transform = `translateY(0px)`;
-      fakeScrollEl.scrollTo(0, 0);
     });
-    wobbleWorklets.forEach(w => w.play());
+    
+    animationGroupTrees.forEach((worklet) =>{
+      //worklet.currentTime = 0;
+      worklet.cancel();
+    })
+    animationGroupMountains.forEach((worklet) =>{
+      worklet.cancel();
+    })
+    createWobbleEffectForTrees(trees).forEach( t => {
+      t.play();
+    })
     isDragLocked = true;
   }
   
@@ -207,13 +209,12 @@ function createWobbleEffectForTrees (trees) {
 };
 
 
-function createParallaxWorkletForTrees(trees, scrollTimeline, timeRange) {
+function createParallaxAnimationForTrees(trees) {
     let w = [];
     trees.forEach(tree => {
       let { tilt, leaves, trunk } = tree;
       w.push(
-        new WorkletAnimation(
-          "parallax",
+        new Animation(
           new KeyframeEffect(
             leaves.elm,
             [
@@ -224,15 +225,13 @@ function createParallaxWorkletForTrees(trees, scrollTimeline, timeRange) {
                 }")`
               }
             ],
-            { duration: timeRange }
+            { duration: 3000 }
           ),
-          scrollTimeline,
-          { rate: 1 }
+          document.timeline
         )
       );
       w.push(
-        new WorkletAnimation(
-          "parallax",
+        new Animation(
           new KeyframeEffect(
             trunk.elm,
             [
@@ -243,10 +242,9 @@ function createParallaxWorkletForTrees(trees, scrollTimeline, timeRange) {
                 }")`
               }
             ],
-            { duration: timeRange }
+            { duration: 3000 }
           ),
-          scrollTimeline,
-          { rate: 1 }
+          document.timeline
         )
       );
     });
@@ -254,47 +252,42 @@ function createParallaxWorkletForTrees(trees, scrollTimeline, timeRange) {
 }
 
 
-function createParallaxWorkletForMountains (mountains, scrollTimeline, timeRange) {
+function createParallaxAnimationForMountains (mountains) {
     let { mtnLow, mtnMiddle, mtnTrees } = mountains;
     
     let w = [];
 
     w.push(
-      new WorkletAnimation(
-        "parallax",
+      new Animation(
         new KeyframeEffect(
           mtnLow,
           [{ transform: "translateY(60%)" }, { transform: "translateY(100%)" }],
-          { duration: timeRange }
+          { duration: 3000 }
         ),
-        scrollTimeline,
+        document.timeline,
         { rate: 2 }
       )
     );
 
     w.push(
-      new WorkletAnimation(
-        "parallax",
+      new Animation(
         new KeyframeEffect(
           mtnMiddle,
           [{ transform: "translateY(50%)" }, { transform: "translateY(40%)" }],
-          { duration: timeRange }
+          { duration: 3000 }
         ),
-        scrollTimeline,
-        { rate: 1 }
+        document.timeline
       )
     );
 
     w.push(
-      new WorkletAnimation(
-        "parallax",
+      new Animation(
         new KeyframeEffect(
           mtnTrees,
           [{ transform: "translateY(35%)" }, { transform: "translateY(20%)" }],
-          { duration: timeRange }
+          { duration: 3000 }
         ),
-        scrollTimeline,
-        { rate: 0.7 }
+        document.timeline
       )
     );
     return w;
