@@ -9,8 +9,10 @@
     <!-- import the webpage's stylesheet -->
     <link rel="stylesheet" href="/style.css">
     
-    <!-- import the webpage's javascript file -->
-    <script src="/script.js" defer></script>
+    <script src="/async-animation-helpers.js"></script>
+    <script src="/animation-definitions.js"></script>
+    <script src="/panresponder.js"></script>
+    <script src="/script.js"></script>
   </head>  
   <body>
     <h1 class="warning">
@@ -18,167 +20,114 @@
     </h1>
     <div id="app">
 
-    <header class="header">
-        <!--  Trees mountain -->
-        <svg
-          viewBox="0 0 366 197"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="mnt-trees"
-        >
-          <path d="M0 84L88 48L224 94L348 50L366 64V197H0V84Z" fill="#86D7DB" />
-          <path
-            d="M54 68C77 68 62 36 54 4C46 36 31 68 54 68Z"
-            fill="#389296"
-            id="leaves-5"
-          />
-          <path
-            d="M56 88C55.3333 66.6667 54.6667 45.3333 54 24C53.3333 45.3333 52.6667 66.3333 52 87"
-            fill="black"
-            id="trunk-5"
-          />
-          <path
-            d="M67 65C90 65 75 33 67 0C59 33 44 65 67 65Z"
-            fill="#389296"
-            id="leaves-4"
-          />
-          <path
-            d="M69 85C68.3333 63.6667 67.6667 42.3333 67 21C66.3333 42.3333 65.6667 63.3333 65 84"
-            fill="black"
-            id="trunk-4"
-          />
-          <path
-            d="M264 70C287 70 272 38 264 5C256 38 241 70 264 70Z"
-            fill="#389296"
-            id="leaves-3"
-          />
-          <path
-            d="M266 90C265.333 68.6667 264.667 47.3333 264 26C263.333 47.3333 262.667 68.3333 262 89"
-            fill="black"
-            id="trunk-3"
-          />
-          <path
-            d="M287 69C310 69 295 37 287 4C279 37 264 69 287 69Z"
-            fill="#207277"
-            id="leaves-2"
-          />
-          <path
-            d="M289 89C288.333 67.6667 287.667 46.3333 287 25C286.333 46.3333 285.667 67.3333 285 88"
-            fill="black"
-            id="trunk-2"
-          />
-          <path
-            d="M313 69C336 69 321 37 313 4C305 37 290 69 313 69Z"
-            fill="#389296"
-            id="leaves-1"
-          />
-          <path
-            d="M315 89C314.333 67.6667 313.667 46.3333 313 25C312.333 46.3333 311.667 67.3333 311 88"
-            fill="black"
-            id="trunk-1"
-          />
-        </svg>
-
-        <!-- Middle Mountain -->
-        <svg
-          viewBox="0 0 366 132"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="mtn-middle"
-        >
-          <path d="M0 32L106 12L272 48L342 0L366 20V132H0V32Z" fill="#3C929A" />
-        </svg>
-
-        <!-- Lowest Mountain -->
-        <svg
-          viewBox="0 0 366 111"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="mtn-low"
-        >
-          <path d="M0 25L62 15L235 3L305 0L366 8V111H0V25Z" fill="#416175" />
-        </svg>
+      <header class="header">
+        <svg viewBox="0 0 366 374" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#clip0)">
+          <path d="M0 278L88 242L224 288L348 244L366 258V374.5H0V278Z" fill="#86D7DB" class="mtn-top" />
+          <path d="M40.4525 292.19C56.3334 292.19 45.9763 270.095 40.4525 248C34.9287 270.095 24.5715 292.19 40.4525 292.19Z" fill="#389296" id="leaves-5" />
+          <path d="M41.8334 306C41.3731 291.27 40.9128 276.54 40.4525 261.81C39.9921 276.54 39.5318 291.04 39.0715 305.31" fill="black" id="trunk-5" />
+          <path d="M65.5 281.119C87.1068 281.119 73.0154 251.058 65.5 220.056C57.9846 251.058 43.8932 281.119 65.5 281.119Z" fill="#389296" id="leaves-4" />
+          <path d="M67.3788 299.908C66.7526 279.867 66.1263 259.826 65.5 239.784C64.8737 259.826 64.2474 279.553 63.6211 298.968" fill="black" id="trunk-4" />
+          <path d="M0 309L106 289L272 325L342 277L366 297V374H0V309Z" fill="#3C929A" class="mtn-middle" />
+          <path d="M254.505 291.471C272.364 291.471 260.717 266.624 254.505 241C248.293 266.624 236.646 291.471 254.505 291.471Z" fill="#389296" id="leaves-3"/>
+          <path d="M256.058 307C255.54 290.435 255.023 273.871 254.505 257.306C253.988 273.871 253.47 290.176 252.952 306.224" fill="black" id="trunk-3" />
+          <path d="M283 286C306 286 291 254 283 221C275 254 260 286 283 286Z" fill="#207277" id="leaves-2" />
+          <path d="M285 306C284.333 284.667 283.667 263.333 283 242C282.333 263.333 281.667 284.333 281 305" fill="black" id="trunk-2"  />
+          <path d="M309.209 294.588C324.633 294.588 314.574 273.129 309.209 251C303.844 273.129 293.785 294.588 309.209 294.588Z" fill="#389296" id="leaves-1" />
+          <path d="M310.55 308C310.103 293.694 309.656 279.388 309.209 265.082C308.762 279.388 308.315 293.471 307.868 307.329" fill="black" id="trunk-1" />
+          <path d="M0 327L62 317L235 305L305 302L366 310V374H0V327Z" fill="#416175" class="mtn-low" />
+          </g>
+          <defs>
+          <clipPath id="clip0">
+          <rect width="366" height="374" fill="white"/>
+          </clipPath>
+          </defs>
+          </svg>
       </header>
       
       <div class="listview">
         <div class="action-bar">
-          <button class="action-button">✈️</button>
+          <button class="action-button">
+            <svg class="plane" viewBox="0 0 28 26">
+              <path fill="#fff" d="M0,0 28,13 0,26 0,13 20,13 0,7z" />
+            </svg>
+          </button>
         </div>
         <ul>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
           <li>
             <div class="item-icon">📆</div>
-            <div class="item-text">Meeting with Bogdan</div>
+            <div class="item-text">Meeting</div>
           </li>
         </ul>
-      </div>
+        </div>
       </div>
   </body>
 </html>
