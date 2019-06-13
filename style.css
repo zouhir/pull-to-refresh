@@ -28,6 +28,8 @@ body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  overflow-y: scroll;
+  position: relative;
 }
 
 .warning {
@@ -67,19 +69,6 @@ body {
   bottom: 0;
 }
 
-.mtn-low {
-  transform: translateY(60%);
-}
-
-.mtn-middle {
-  transform: translateY(50%);
-}
-
-.mnt-trees {
-  transform: translateY(35%);
-}
-
-
 /*
  The list view
 */
@@ -112,6 +101,15 @@ body {
   position: relative;
   z-index: 4;
   font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plane {
+  width: 30px;
+  margin-left: 3px;
+  opacity: 0.98
 }
 
 .listview ul {
@@ -139,3 +137,12 @@ body {
   margin-right: 20px;
 }
 
+#leaves-5, #trunk-5, #leaves-4, #trunk-4 {
+  opacity: 0.7;
+  
+}
+
+#leaves-1, #trunk-1, #leaves-3, #trunk-3 {
+  opacity: 0.9;
+  
+}

@@ -5,14 +5,13 @@ if (!("animationWorklet" in CSS)) {
   $('.warning').style.display = "block";
 }
 
-
 // register animation
-Promise.all([ /* CSS.animationWorklet.addModule("worklets/parallax.js") */, CSS.animationWorklet.addModule("worklets/wobble.js")]).then(function(values) {
+Promise.all([ /* CSS.animationWorklet.addModule("worklets/parallax.js") */, CSS.animationWorklet.addModule("worklets/good-night-animation.js")]).then(function(values) {
   pageReady()
 });
 
-
 function pageReady () {
+  scrollTimeLine()
   // elements selectors
   const appEl = $("#app");
   const dragEl = $(".action-bar");
@@ -21,81 +20,52 @@ function pageReady () {
   const trees = getTrees();
   const mtnLow = $(".mtn-low");
   const mtnMiddle = $(".mtn-middle");
-  const mtnTrees = $(".mnt-trees");
+  const mtnTop = $(".mtn-top");
+  const plane = $(".plane");
   
-  // scroll timeline variables 
-  // const scrollSource = fakeScrollEl;
-  // const timeRange = 10;
-  // const scrollTimeline = new ScrollTimeline({ scrollSource, timeRange });
  
-  const animationGroupTrees = createParallaxAnimationForTrees(trees);
-  const animationGroupMountains = createParallaxAnimationForMountains({mtnLow, mtnMiddle, mtnTrees});
+  const animationGroupTrees = createParallaxAnimationForTrees(trees)
+  const translateMountainLow = AnimationEngine.translateMountain(mtnLow, 500)
+  const translateMountainMiddle = AnimationEngine.translateMountain(mtnMiddle, 900)
+  const translateMountainTop = AnimationEngine.translateMountain(mtnTop, 1200)
+  const wobbleTrees = createWobbleEffectForTrees(trees)
+
+
+  let panResponder = new PanResponder( dragEl, {} );
   
-  // mouse-drag functionality
-  let isDragLocked = true;
-  let startY = 0;
-  dragEl.addEventListener("mousedown", e => {
-    e.preventDefault();
-    isDragLocked = false;
-    startY = e.clientY;
-  });
-   dragEl.addEventListener("touchstart", e => {
-    e.preventDefault();
-    isDragLocked = false;
-    startY = e.touches[0].clientY;
-  });
-  
-  document.addEventListener("touchend", _stopDragging);
-  document.addEventListener("touchcancel", _stopDragging);
-  document.addEventListener("touchmove", _startDragging); 
-  
-  document.addEventListener("mouseup", _stopDragging);
-  document.addEventListener("mousemove", _startDragging);
-  appEl.addEventListener("mouseleave", _stopDragging );
-  
-  function _startDragging(e) {
-    if (isDragLocked === true) return;
-    let endY = e.clientY || e.touches[0].clientY;
-    let delta = startY - endY;
+  panResponder.onPanResponderMove = function(delta) {
     let absDelta = Math.abs(delta);
-    if (delta < 0) {
-      
-      window.requestAnimationFrame(() => {
-        listviewEl.style.transform = `translateY(${absDelta}px)`;
-        animationGroupTrees.forEach((worklet) =>{
-          worklet.currentTime += 15;
-        })
-        animationGroupMountains.forEach((worklet) =>{
-          worklet.currentTime += 15;
-        })
-      });
-    }
+    if( absDelta > 200  ) return;
+    promiseRequestAnimationFrame().then( _ => {
+      listviewEl.style.transform = `translateY(${absDelta}px)`;
+      // animationPlane.currentTime = absDelta;
+      animationGroupTrees.setCurrentTime(delta * -1)
+      translateMountainLow.setCurrentTime(delta * -1)
+      translateMountainMiddle.setCurrentTime(delta * -1)
+      translateMountainTop.setCurrentTime(delta * -1)
+    })
   }
   
-  function _stopDragging (e) {
-    if (isDragLocked === true) return;
-    listviewEl.addEventListener("transitionend", e => {
-      listviewEl.style.transition = ``;
-      listviewEl.style.transform = ``;
-    });
-    window.requestAnimationFrame(() => {
-      listviewEl.style.transition = `transform 0.15s ease-in-out`;
-      listviewEl.style.transform = `translateY(0px)`;
-    });
+  panResponder.onPanResponderRelease = function (delta) {
+    AnimationEngine.bounceListView(listviewEl, delta).play().then( animationInstance => {
+      console.log('Async: bouncing list view is done')
+      animationInstance.cancel();
+      listviewEl.style.transform = `translateY(0px)`
+    })
+    translateMountainLow.setCurrentTime(0)
+    translateMountainMiddle.setCurrentTime(0)
+    translateMountainTop.setCurrentTime(0)
     
-    animationGroupTrees.forEach((worklet) =>{
-      //worklet.currentTime = 0;
-      worklet.cancel();
+    animationGroupTrees.reverse().then(expiredAnimation => {
+      console.log('Async: trees has been smoothly reversed, you can wobble')
+      expiredAnimation.forEach(_ => _.cancel())
+      wobbleTrees.play().then( expiredAnimation2 => {
+        console.log("Async: wobble effect is done, detach all animations from tree elements")
+        expiredAnimation2.forEach(_ => _.cancel())
+        
+      });
     })
-    animationGroupMountains.forEach((worklet) =>{
-      worklet.cancel();
-    })
-    createWobbleEffectForTrees(trees).forEach( t => {
-      t.play();
-    })
-    isDragLocked = true;
   }
-  
 }
 
 
@@ -134,7 +104,7 @@ function _getEndPath (startPath) {
     .map((val, idx) => {
     if (idx === 5) {
       val = Number(val);
-  return (val += 30);
+  return (val += 10);
     } else {
         return val;
       }
@@ -145,7 +115,7 @@ function _getEndPath (startPath) {
     .map((val, idx) => {
       if (idx === 5) {
         val = Number(val);
-        return (val -= 30);
+        return (val -= 10);
       } else {
         return val;
       }
@@ -159,136 +129,41 @@ function createWobbleEffectForTrees (trees) {
     let w = [];
     trees.forEach(tree => {
       let { leaves, trunk } = tree;
-      w.push(
-        new WorkletAnimation(
-          "wobble",
-          new KeyframeEffect(
-            leaves.elm,
-            [
-              { d: `path("${leaves.paths[0]}")` },
-              {
-                d: `path("${leaves.paths[1]}")`
-              },
-              {
-                d: `path("${leaves.paths[0]}")`
-              },
-              {
-                d: `path("${leaves.paths[2]}")`
-              }
-            ],
-            { duration: 10, iterations: 5 }
-          ),
-          document.timeline
-        )
-      );
-      w.push(
-        new WorkletAnimation(
-          "wobble",
-          new KeyframeEffect(
-            trunk.elm,
-            [
-              { d: `path("${trunk.paths[0]}")` },
-              {
-                d: `path("${trunk.paths[1]}")`
-              },
-              {
-                d: `path("${trunk.paths[0]}")`
-              },
-              {
-                d: `path("${trunk.paths[2]}")`
-              }
-            ],
-            { duration: 10, iterations: 5 }
-          ),
-          document.timeline
-        )
-      );
-    });
+      let a = AnimationEngine.wobbleTree(leaves.elm, leaves.paths[0], leaves.paths[1], leaves.paths[2] );
+      let b = AnimationEngine.wobbleTree(trunk.elm, trunk.paths[0], trunk.paths[1], trunk.paths[2] );
+      w.push(a)
+      w.push(b)
+    })
 
-    return w;
+    return new AsyncGroupAnimation(w)
 };
 
 
 function createParallaxAnimationForTrees(trees) {
-    let w = [];
+    
+    let w = []
     trees.forEach(tree => {
       let { tilt, leaves, trunk } = tree;
-      w.push(
-        new Animation(
-          new KeyframeEffect(
-            leaves.elm,
-            [
-              { d: `path("${leaves.paths[0]}")` },
-              {
-                d: `path("${
-                  tilt === "right" ? leaves.paths[1] : leaves.paths[2]
-                }")`
-              }
-            ],
-            { duration: 3000 }
-          ),
-          document.timeline
-        )
-      );
-      w.push(
-        new Animation(
-          new KeyframeEffect(
-            trunk.elm,
-            [
-              { d: `path("${trunk.paths[0]}")` },
-              {
-                d: `path("${
-                  tilt === "right" ? trunk.paths[1] : trunk.paths[2]
-                }")`
-              }
-            ],
-            { duration: 3000 }
-          ),
-          document.timeline
-        )
-      );
-    });
-    return w;
+      let a = AnimationEngine.bendTree(leaves.elm, leaves.paths[0], tilt === "right" ? leaves.paths[1] : leaves.paths[2] );
+      let b = AnimationEngine.bendTree(trunk.elm, trunk.paths[0], tilt === "right" ? trunk.paths[1] : trunk.paths[2] );
+      w.push(a)
+      w.push(b)
+    })
+    
+    return new AsyncGroupAnimation(w)
 }
 
 
-function createParallaxAnimationForMountains (mountains) {
-    let { mtnLow, mtnMiddle, mtnTrees } = mountains;
-    
-    let w = [];
 
-    w.push(
-      new Animation(
-        new KeyframeEffect(
-          mtnLow,
-          [{ transform: "translateY(60%)" }, { transform: "translateY(100%)" }],
-          { duration: 3000 }
-        ),
-        document.timeline,
-        { rate: 2 }
-      )
-    );
-
-    w.push(
-      new Animation(
-        new KeyframeEffect(
-          mtnMiddle,
-          [{ transform: "translateY(50%)" }, { transform: "translateY(40%)" }],
-          { duration: 3000 }
-        ),
-        document.timeline
-      )
-    );
-
-    w.push(
-      new Animation(
-        new KeyframeEffect(
-          mtnTrees,
-          [{ transform: "translateY(35%)" }, { transform: "translateY(20%)" }],
-          { duration: 3000 }
-        ),
-        document.timeline
-      )
-    );
-    return w;
-  };
+function scrollTimeLine() {
+  const scrollSource = $("#app");
+  const timeRange = 10;
+  const scrollTimeline = new ScrollTimeline({ scrollSource, timeRange });
+  
+  const header = $(".header")
+  
+  let animationName = "good-night-animation";
+  let animation = AnimationEngine.darkenSky(animationName, header, scrollTimeline, timeRange)
+  
+  animation.play();
+}

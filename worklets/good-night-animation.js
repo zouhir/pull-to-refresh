@@ -1,8 +1,8 @@
 registerAnimator(
-  "wobble",
+  "good-night-animation",
   class {
     animate(currentTime, effect) {
-      effect.localTime = currentTime / 20;
+      effect.localTime = currentTime;
     }
   }
 );
