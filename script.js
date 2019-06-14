@@ -1,6 +1,7 @@
 const $ = document.querySelector.bind(document);
 var $$ = document.querySelectorAll.bind(document);
 
+
 if (!("animationWorklet" in CSS)) {
   $('.warning').style.display = "block";
 }
@@ -36,14 +37,11 @@ function pageReady () {
   panResponder.onPanResponderMove = function(delta) {
     let absDelta = Math.abs(delta);
     if( absDelta > 200  ) return;
-    promiseRequestAnimationFrame().then( _ => {
-      listviewEl.style.transform = `translateY(${absDelta}px)`;
-      // animationPlane.currentTime = absDelta;
-      animationGroupTrees.setCurrentTime(delta * -1)
-      translateMountainLow.setCurrentTime(delta * -1)
-      translateMountainMiddle.setCurrentTime(delta * -1)
-      translateMountainTop.setCurrentTime(delta * -1)
-    })
+    listviewEl.style.transform = `translateY(${absDelta}px)`;
+    animationGroupTrees.setCurrentTime(delta * -1)
+    translateMountainLow.setCurrentTime(delta * -1)
+    translateMountainMiddle.setCurrentTime(delta * -1)
+    translateMountainTop.setCurrentTime(delta * -1)
   }
   
   panResponder.onPanResponderRelease = function (delta) {
