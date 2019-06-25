@@ -81,3 +81,42 @@ class AsyncGroupAnimation {
     return Promise.all(promises)
   }
 }
+
+
+class AnimationObserver {
+  constructor(element, property = 'top', initial = 0) {
+    // the element we are observing
+    this.element = element;
+    // what rect property we are wanting to observe: right, left, top, bottom, width, height 
+    this.property = property;
+    // initial value of property we observing so we can report "delta"
+    this.initial = initial;
+    // keeping a refrence of raf timer so we can cancel it
+    this.raf = null;
+    
+    //**
+    // The callback that represents our timeline
+    // functions hooked into this get "value" and "delta" of the property on element we are observing
+    //**
+    this.observe = null;
+  }
+  
+  start() {
+    this.raf = window.requestAnimationFrame(this.calculate.bind(this));
+  }
+  
+  calculate() {
+    if( this.observe !== null ) {
+      let value = this.element.getBoundingClientRect()[ this.property ]
+      let delta = value - this.initial
+      this.observe({ value, delta })
+    }
+    this.raf = window.requestAnimationFrame(this.calculate.bind(this))
+  }
+  
+  // cancel \ detach the observer when not needed
+  cancel() {
+    window.cancelAnimationFrame(this.raf)
+  }
+  
+}
