@@ -7,6 +7,12 @@ AnimationEngine.bounceListView = (element, initialY) => {
         transform: `translateY(${initialY}px)`
       },
       {
+        transform: `translateY(-47px)`
+      },
+      {
+        transform: `translateY(40px)`
+      },
+      {
         transform: `translateY(-33px)`
       },
       {
@@ -24,9 +30,8 @@ AnimationEngine.bounceListView = (element, initialY) => {
     ]
     
     let timing = {
-      duration: 500
+      duration: 1800
     }
-    
     
     let animationInstance = new Animation(
       new KeyframeEffect(
@@ -38,68 +43,43 @@ AnimationEngine.bounceListView = (element, initialY) => {
     
     let bounceAsyncAnimation = new AsyncAnimation(animationInstance)
     return bounceAsyncAnimation
-  }
-
-
-AnimationEngine.bendTree = (element, path1, path2) => {
-  
-  let keyframes = [
-    { d: `path("${path1}")` },
-    {
-      d: `path("${path2}")`
-    }
-  ]
-  
-  let timing = {
-    duration: 300
-  }
-  
-  let animationInstance = new Animation(
-    new KeyframeEffect(
-      element,
-      keyframes,
-      timing
-    )
-  )
-  
-  let bendTreeAsyncAnimation = new AsyncAnimation(animationInstance)
-  return bendTreeAsyncAnimation 
 }
 
-AnimationEngine.wobbleTree = (element, path1, path2, path3) => {
+AnimationEngine.flyAirPlane = (element) => {
   
   let keyframes = [
-    { 
-      d: `path("${path1}")` 
-    },
-    {
-      d: `path("${path2}")`
-    },
-    {
-      d: `path("${path1}")`
-    },
-    {
-      d: `path("${path3}")`
-    },
-    {
-      d: `path("${path1}")`
+      {
+        transform: `translate(0, 0) rotate(-30deg) scale(1)`
+      },
+      {
+        transform: `translate(600px, -200px) rotate(-30deg) scale(1)`
+      },
+      {
+        transform: ` translate(800px, -300px) rotate(-160deg) scale(1)`
+      },
+      {
+        transform: ` translate(-600px, -100px) rotate(-180deg) scale(0.7)`
+      },
+      {
+        transform: `rotate(0deg)`
+      }
+    ]
+    
+    let timing = {
+      duration: 7000
     }
-  ]
-  
-  let timing = {
-    duration: 700
-  }
-  
-  let animationInstance = new Animation(
-    new KeyframeEffect(
-      element,
-      keyframes,
-      timing
+    
+    
+    let animationInstance = new Animation(
+      new KeyframeEffect(
+        element,
+        keyframes,
+        timing
+      )
     )
-  )
-  
-  let wobbleTreeAnimation = new AsyncAnimation(animationInstance)
-  return wobbleTreeAnimation 
+    
+    let flyAnimation = new AsyncAnimation(animationInstance)
+    return flyAnimation
   
 }
 
