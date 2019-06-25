@@ -39,23 +39,16 @@ function pageReady () {
     updateTree(trees, delta)
   }
   
-  let prevRafDelta = 0
   planePositionObserver.observe = function(val) {
-    let { delta } = val
-    if( delta > prevRafDelta ) {
-      updateTree(trees, delta / 20 )
-    } else {
-      updateTree(trees, (delta / 20) )
-    }
-    
+    let { delta } = val  
+    updateTree(trees, delta / 20 )
   }
-  
   
   actionBtn.addEventListener('click', () => {
     planePositionObserver.start();
     flyAirPlaneAnimation.play().then(_ => {
       planePositionObserver.cancel();
-      prevRafDelta = 0;
+      _prevRafDelta = 0;
     })
   })
   
